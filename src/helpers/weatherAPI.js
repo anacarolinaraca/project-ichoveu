@@ -10,6 +10,15 @@ export const searchCities = async (term) => {
   return data;
 };
 
-export const getWeatherByCity = (/* cityURL */) => {
-//   seu código aqui
+export const getWeatherByCity = async (cityURL) => {
+  const urlForecast = `http://api.weatherapi.com/v1/current.json?lang=pt&key=${token}&q=${cityURL}`;
+  const responses = await fetch(urlForecast);
+  const datas = await responses.json();
+
+  const { location: { name, country },
+    current: { condition: { text: condicao, icon },
+      temp_c: temperatura } } = datas;
+  return { name, country, condicao, temperatura, icon };
 };
+
+// console.log(getWeatherByCity('belo-horizonte-belo-horizonte-brazil'));
