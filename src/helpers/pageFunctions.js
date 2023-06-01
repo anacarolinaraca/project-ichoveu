@@ -1,4 +1,4 @@
-import { getWeatherByCity, searchCities } from './weatherAPI';
+import { getWeatherByCity, searchCities, searchSevenDays } from './weatherAPI';
 
 /**
  * Cria um elemento HTML com as informações passadas
@@ -77,7 +77,7 @@ export function showForecast(forecastList) {
  * Recebe um objeto com as informações de uma cidade e retorna um elemento HTML
  */
 export function createCityElement(cityInfo) {
-  const { name, country, temp, condition, icon /* , url */ } = cityInfo;
+  const { name, country, temp, condition, icon, url } = cityInfo;
 
   const cityElement = createElement('li', 'city');
 
@@ -104,17 +104,17 @@ export function createCityElement(cityInfo) {
   cityElement.appendChild(headingElement);
   cityElement.appendChild(infoContainer);
 
-  // const btnViewForecast = containerForecast.createElement(
-  //   'btn',
-  //   'btn-view-forecast',
-  //   'Ver Previsão',
-  // );
+  const btnViewForecast = createElement(
+    'button',
+    'city-forecast-button',
+    'Ver previsão',
+  );
+  cityElement.appendChild(btnViewForecast);
 
-  // btnViewForecast.addEventListener('click', async () => {
-  //   const citiesSearch = await searchCities(url);
-  //   showForecast(citiesSearch);
-  // });
-  // cityElement.appendChild(btnViewForecast);
+  btnViewForecast.addEventListener('click', async () => {
+    const citiesSearch = await searchSevenDays(url);
+    showForecast(citiesSearch);
+  });
 
   return cityElement;
 }
@@ -145,12 +145,6 @@ export const handleSearch = async (event) => {
   } catch (error) {
     return error;
   }
-  // .then((result) => {
-  //   createCityElement(result[0]);
-  //   return result;
-  // }).catch((error) => {
-  //   return error;
-  // });
   console.log(getWeatherCitie);
   return getWeatherCitie;
 };

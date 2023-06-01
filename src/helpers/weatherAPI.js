@@ -1,7 +1,7 @@
 const token = import.meta.env.VITE_TOKEN;
 
 export const searchCities = async (term) => {
-  const apiURL = `http://api.weatherapi.com/v1/search.json?lang=pt&key=${token}&q=${term}&days=7`;
+  const apiURL = `http://api.weatherapi.com/v1/search.json?lang=pt&key=${token}&q=${term}`;
   const response = await fetch(apiURL);
   const data = await response.json();
   if (data.length === 0) {
@@ -9,6 +9,25 @@ export const searchCities = async (term) => {
     return [];
   }
 
+  return data;
+};
+
+export const searchSevenDays = async (term) => {
+  const apiURL = `http://api.weatherapi.com/v1/forecast.json?lang=pt&key=${token}&q=${term}&days=7`;
+  const response = await fetch(apiURL);
+  let data = await response.json();
+  if (data.length === 0) {
+    window.alert('Nenhuma cidade encontrada');
+    return [];
+  }
+
+  data = data.forecast.forecastday.map((preview) => {
+    const { date } = preview;
+    const maxTemp = preview.day.maxtemp_c;
+    const minTemp = preview.day.mintemp_c;
+    const { text, icon } = preview.day.condition;
+    return { date, maxTemp, minTemp, condition: text, icon };
+  });
   return data;
 };
 
