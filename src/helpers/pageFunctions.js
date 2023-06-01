@@ -104,6 +104,18 @@ export function createCityElement(cityInfo) {
   cityElement.appendChild(headingElement);
   cityElement.appendChild(infoContainer);
 
+  // const btnViewForecast = containerForecast.createElement(
+  //   'btn',
+  //   'btn-view-forecast',
+  //   'Ver Previsão',
+  // );
+
+  // btnViewForecast.addEventListener('click', async () => {
+  //   const citiesSearch = await searchCities(url);
+  //   showForecast(citiesSearch);
+  // });
+  // cityElement.appendChild(btnViewForecast);
+
   return cityElement;
 }
 
@@ -118,15 +130,27 @@ export const handleSearch = async (event) => {
   const searchInput = document.getElementById('search-input');
   const searchValue = searchInput.value;
   const searchCitie = await searchCities(searchValue);
+  const ulElement = document.getElementById('cities');
 
-  const getWeatherCitie = Promise.all(
-    searchCitie.map((cityURL) => (getWeatherByCity(cityURL))),
-  ).then((result) => {
-    return result;
-  }).catch((error) => {
+  const cityUrl = searchCitie.map((cityURL) => getWeatherByCity(cityURL));
+
+  const getWeatherCitie = await Promise.all(cityUrl);
+
+  try {
+    getWeatherCitie.forEach((cityURL) => {
+      const cities = createCityElement(cityURL);
+      console.log(cities);
+      ulElement.appendChild(cities);
+    });
+  } catch (error) {
     return error;
-  });
-
+  }
+  // .then((result) => {
+  //   createCityElement(result[0]);
+  //   return result;
+  // }).catch((error) => {
+  //   return error;
+  // });
+  console.log(getWeatherCitie);
   return getWeatherCitie;
 };
-// console.log(handleSearch());
